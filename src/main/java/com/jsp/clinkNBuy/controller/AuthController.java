@@ -3,19 +3,24 @@ package com.jsp.clinkNBuy.controller;
 import java.util.concurrent.TimeoutException;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jsp.clinkNBuy.dto.LoginDto;
 import com.jsp.clinkNBuy.dto.OtpDto;
+import com.jsp.clinkNBuy.dto.PasswordDto;
 import com.jsp.clinkNBuy.dto.ResponseDto;
 import com.jsp.clinkNBuy.dto.UserDto;
 import com.jsp.clinkNBuy.service.AuthService;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+//import sun.security.x509.RDN;
 
 @RestController
 @AllArgsConstructor
@@ -35,4 +40,30 @@ public class AuthController {
 	public ResponseDto verifyOtp(@RequestBody OtpDto otpDto) throws TimeoutException {
 		return authService.verifyOtp(otpDto);
 	}
+	
+	@GetMapping("/resend-otp")
+	@ResponseStatus(code = HttpStatus.OK)
+	public ResponseDto resendDTo(@RequestParam String email) {
+		return authService.resendOtp(email);		
+	}
+	
+	@GetMapping("/forget-password")
+	@ResponseStatus(code = HttpStatus.OK)
+	public ResponseDto forgetPassword(@RequestParam String email) {
+		return authService.forgetPassword(email);
+	}
+	
+	@PostMapping("/forget-password")
+	@ResponseStatus(code = HttpStatus.OK)
+	public ResponseDto forgetPassword(@Valid @RequestBody PasswordDto passwordDto) throws TimeoutException {
+		return authService.forgetPassword(passwordDto);
+	}
+	
+	@PostMapping("/login")
+	public ResponseDto login(@Valid @RequestBody LoginDto loginDto) {
+		return authService.login(loginDto);
+	}
+		
+	
+	
 }
