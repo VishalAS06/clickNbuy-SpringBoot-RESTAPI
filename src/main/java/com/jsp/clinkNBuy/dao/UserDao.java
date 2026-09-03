@@ -16,6 +16,11 @@ public class UserDao {
 	public User saveUser(User user) {
 		return userRepository.save(user);
 	}
+	
+	public boolean isEmailAndMobileUnique(String email,Long mobile) {
+		return !userRepository.existsByEmailorMobile(email, mobile);
+		
+	}
 
 	public boolean isEmailUnique(String email) {
 		return !userRepository.existsByEmail(email);

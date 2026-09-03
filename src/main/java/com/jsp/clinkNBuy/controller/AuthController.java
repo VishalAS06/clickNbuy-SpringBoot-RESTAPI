@@ -60,6 +60,7 @@ public class AuthController {
 	}
 	
 	@PostMapping("/login")
+	@ResponseStatus(code = HttpStatus.OK)
 	public ResponseDto login(@Valid @RequestBody LoginDto loginDto) {
 		return authService.login(loginDto);
 	}
