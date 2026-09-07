@@ -11,7 +11,7 @@ import com.jsp.clinkNBuy.dto.ResponseDto;
 import com.jsp.clinkNBuy.dto.UserDto;
 
 import jakarta.validation.Valid;
-@Service
+
 public interface AuthService {
 
 	ResponseDto register(UserDto userDto);

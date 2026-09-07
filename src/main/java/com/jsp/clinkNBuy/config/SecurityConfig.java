@@ -1,5 +1,6 @@
 package com.jsp.clinkNBuy.config;
 
+import java.io.ObjectInputFilter.Config;
 import java.net.Authenticator.RequestorType;
 import java.security.AuthProvider;
 
@@ -9,6 +10,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -27,49 +29,33 @@ import lombok.AllArgsConstructor;
 @Configuration
 @EnableWebSecurity
 @AllArgsConstructor
+@EnableMethodSecurity
 public class SecurityConfig {
 	
-	JwtFilter jwtFilter;
-	UserDetailsService userDetailsService;
+	private final JwtFilter jwtFilter;
 	
 	@Bean
-	PasswordEncoder encoder() {
+	PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 	
-//	@Bean
-//	SecurityFilterChain chain(HttpSecurity http) throws Exception {
-//		return http.csrf(x -> x.disable())
-//				.authorizeHttpRequests(req -> req.requestMatchers("/api/v1/user/auth/**").permitAll()).build();
-//	}
-	
-	@Bean
-	SecurityFilterChain chain(HttpSecurity http) throws Exception {
-	    return http
-	            .csrf(csrf -> csrf.disable())
-	            .sessionManagement(Session ->Session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-	            .authorizeHttpRequests(req ->
-	            req.requestMatchers("/api/v1/users/auth/**").permitAll())
-	            .authenticationProvider(authenticationProvider())
-	            .addFilterBefore((Filter) jwtFilter, UsernamePasswordAuthenticationFilter.class).build();
-	}
 	
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
 		return configuration.getAuthenticationManager();
 		
 	}
-
-private AuthenticationProvider authenticationProvider() {
-	DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-	authenticationProvider.setUserDetailsService(userDetailsService);
-	authenticationProvider.setPasswordEncoder(encoder());
 	
-	// TODO Auto-generated method stub
-	return authenticationProvider;
-}
+	@Bean
+	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		http.csrf(csrf -> csrf.disable())
+		.sessionManagement(Session -> Session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+		.authorizeRequests(auth -> auth.requestMatchers("/api/v1/admin/**","/test").hasRole("ADMIN")
+		.requestMatchers("/api/v1/user/**").hasRole("USER").requestMatchers("/api/v1/seller/**").hasRole("SELLER").requestMatchers("/api/v1/user/auth/**").permitAll().anyRequest().denyAll())
+		.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+		return http.build();
+	}
 
 
-	
 
 }

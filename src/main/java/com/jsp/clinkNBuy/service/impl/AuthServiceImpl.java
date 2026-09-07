@@ -32,7 +32,7 @@ import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
-public  class AuthServiceImpl implements AuthService {
+public   class AuthServiceImpl implements AuthService {
 
 	UserDao userDao;
 	PasswordEncoder encoder;
@@ -121,17 +121,7 @@ public  class AuthServiceImpl implements AuthService {
 			throw new TimeoutException("Otp Expired, Resend Otp and Try Again");
 		}
 	}
-	
-	
-//	public ResponseDto login1(LoginDto loginDto) {
-//		return new ResponseDto("Login Success", loginDto);
-//	}
-//	@Override
-//	public ResponseDto forgetPassword(@Valid PasswordDto passwordDto) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-	
+		
 	
 	@SuppressWarnings("null")
 	@Override

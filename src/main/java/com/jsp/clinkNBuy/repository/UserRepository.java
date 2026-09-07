@@ -22,6 +22,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	    boolean existsEmailOrMobile(@Param("email") String email,
 	                                @Param("mobile") Long mobile);
 
-	boolean existsByEmailorMobile(String email, Long mobile);
+	
 
 }
