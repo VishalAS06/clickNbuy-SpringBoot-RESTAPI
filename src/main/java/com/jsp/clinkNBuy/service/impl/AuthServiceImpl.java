@@ -1,5 +1,6 @@
 package com.jsp.clinkNBuy.service.impl;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.InputMismatchException;
@@ -23,6 +24,7 @@ import com.jsp.clinkNBuy.dto.UserDto;
 import com.jsp.clinkNBuy.entity.Role;
 import com.jsp.clinkNBuy.entity.User;
 import com.jsp.clinkNBuy.exception.DataExistsException;
+import com.jsp.clinkNBuy.exception.TooManyRequestsException;
 import com.jsp.clinkNBuy.security.JwtUtil;
 import com.jsp.clinkNBuy.service.AuthService;
 import com.jsp.clinkNBuy.util.EmailSender;
@@ -45,14 +47,14 @@ public   class AuthServiceImpl implements AuthService {
 	@Override
 	public ResponseDto register(UserDto userDto) {
 		if (userDao.isEmailAndMobileUnique(userDto.getEmail(), userDto.getMobile())){
-			int otp = new Random().nextInt(100000, 1000000);
+			int otp = new SecureRandom().nextInt(100000, 1000000);
 			emailSender.sendOtp(userDto.getEmail(), otp, userDto.getName());
 //			
 			userDao.saveUser(
 					new User(null, userDto.getName(), userDto.getEmail(), 
 							encoder.encode(userDto.getPassword()),
 							userDto.getMobile(), null, otp, LocalDateTime.now().plusMinutes(5),
-							Role.valueOf("ROLE_"+ userDto.getRole().toUpperCase()),false));
+							Role.valueOf("ROLE_"+ userDto.getRole().toUpperCase()),false,0,null));
 			return new ResponseDto("Otp Sent Success, Verify within 5 minutes", userDto);
 		} else {
 			if (!userDao.isEmailUnique(userDto.getEmail()))
@@ -82,15 +84,24 @@ public   class AuthServiceImpl implements AuthService {
 	@Override
 	public ResponseDto resendOtp(String email) {
 		User user = userDao.findByEmail(email);
+		if (user.getLastOtpRequestTime() !=null && user.getOtpAttempts() < 6 
+			&&
+			user.getLastOtpRequestTime().plusMinutes(1).isAfter(LocalDateTime.now())){
+				throw new TooManyRequestsException("Please wait before requesting another OTP");
+			}
+		
 		int otp = new Random().nextInt(100000, 1000000 );
 		emailSender.sendOtp(user.getEmail(), otp, user.getName());
 		user.setOtp(otp);
+		user.setLastOtpRequestTime(LocalDateTime.now());
 		user.setOtpExpiryTime(LocalDateTime.now().plusMinutes(5));
 		userDao.saveUser(user);
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("email", email);
 		return new ResponseDto("Otp Resent Success valid only for 5 minutes", map);	
+
 	}
+
 	
 	@Override
 	public ResponseDto forgetPassword(String email) {
@@ -123,7 +134,7 @@ public   class AuthServiceImpl implements AuthService {
 	}
 		
 	
-	@SuppressWarnings("null")
+	
 	@Override
 	public ResponseDto login( LoginDto loginDto) {
 		AuthenticationManager authenticationManager = null;
@@ -131,9 +142,13 @@ public   class AuthServiceImpl implements AuthService {
 		UserDetails userDetails= userDetailsService.loadUserByUsername(loginDto.getEmail());
 		String token= jwtUtil.generateToken(userDetails);
 		
-		Map<String, String> map=new HashMap<String, String>();
-		map.put("token", token);
-		return new ResponseDto("Login Success", map);
+		User user = userDao.findByEmail(loginDto.getEmail());
+		Map<String, Object> response = new HashMap<>();
+		response.put("token", token);
+		response.put("name", user.getName());
+		response.put("email", user.getEmail());
+		response.put("role", user.getRole());
+		return new ResponseDto("Login Success", response);
 		
 		
 	}
@@ -142,4 +157,6 @@ public   class AuthServiceImpl implements AuthService {
 		// TODO Auto-generated method stub
 		return null;
 	}
-}
+	
+	}
+
