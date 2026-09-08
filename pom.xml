@@ -104,6 +104,11 @@
 			<artifactId>E-commercesite</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>bidirction1</groupId>
+			<artifactId>bidirection1</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	<build>
