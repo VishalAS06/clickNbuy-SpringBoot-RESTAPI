@@ -50,8 +50,11 @@ public class SecurityConfig {
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.csrf(csrf -> csrf.disable())
 		.sessionManagement(Session -> Session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-		.authorizeRequests(auth -> auth.requestMatchers("/api/v1/admin/**","/test").hasRole("ADMIN")
-		.requestMatchers("/api/v1/user/**").hasRole("USER").requestMatchers("/api/v1/seller/**").hasRole("SELLER").requestMatchers("/api/v1/user/auth/**").permitAll().anyRequest().denyAll())
+		.authorizeHttpRequests(auth -> auth.requestMatchers("/api/v1/user/auth/**").permitAll()
+				.requestMatchers("/api/v1/admin/**").hasRole("ADMIN").requestMatchers("/api/v1/user/**")
+				.hasRole("USER").requestMatchers("/api/v1/seller/**").hasRole("SELLER").anyRequest()
+				.authenticated())
+		
 		.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 		return http.build();
 	}
