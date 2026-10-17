@@ -18,7 +18,7 @@ public class UserDao {
 	}
 	
 	public boolean isEmailAndMobileUnique(String email,Long mobile) {
-		return !userRepository.existsByEmailorMobile(email, mobile);
+		return !userRepository.existsEmailOrMobile(email, mobile);
 		
 	}
 

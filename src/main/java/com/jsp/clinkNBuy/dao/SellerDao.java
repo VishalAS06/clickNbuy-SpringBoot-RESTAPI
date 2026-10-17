@@ -35,8 +35,8 @@ public class SellerDao {
 		return !productRepository.existsByNameAndBrandAndPrice(name, brand, price);
 	}
 
-	public List<Product> fetchProducts(User user) {
-		List<Product> products = productRepository.findByUser(user);
+	public <Pageable> List<Product> fetchProducts(User user, org.springframework.data.domain.Pageable pageable) {
+		List<Product> products = productRepository.findByUser(user,pageable);
 		if (products.isEmpty())
 			throw new DataNotFoundException("No Products Present");
 		else

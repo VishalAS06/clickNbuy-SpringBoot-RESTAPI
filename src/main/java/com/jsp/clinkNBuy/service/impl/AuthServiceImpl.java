@@ -42,6 +42,7 @@ public   class AuthServiceImpl implements AuthService {
 	AuthenticationManager autjAuthenticationManager;
 	UserDetailsService userDetailsService;
 	JwtUtil jwtUtil;
+	private AuthenticationManager authenticationManager;
 	
 
 	@Override
@@ -137,7 +138,9 @@ public   class AuthServiceImpl implements AuthService {
 	
 	@Override
 	public ResponseDto login( LoginDto loginDto) {
-		AuthenticationManager authenticationManager = null;
+		
+//		AuthenticationManager autjhenticationManager;
+		AuthenticationManager autjAuthenticationManager;
 		authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword()));
 		UserDetails userDetails= userDetailsService.loadUserByUsername(loginDto.getEmail());
 		String token= jwtUtil.generateToken(userDetails);
