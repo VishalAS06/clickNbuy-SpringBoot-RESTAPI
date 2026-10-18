@@ -1,5 +1,6 @@
 package com.jsp.clinkNBuy.exception;
 
+import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Map;
@@ -90,5 +91,10 @@ public class GlobalExceptionHandler {
 		return new ErrorDto(exception.toString());
 	}
 	
+	@ExceptionHandler(AccessDeniedException.class)
+	@ResponseStatus(code = HttpStatus.FORBIDDEN)
+	public ErrorDto handle(AccessDeniedException exception) {
+		return new ErrorDto(exception.toString());
+	}
 	
 }
