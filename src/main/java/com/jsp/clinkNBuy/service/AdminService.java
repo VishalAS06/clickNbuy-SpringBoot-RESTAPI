@@ -17,6 +17,8 @@ public interface AdminService {
 	ResponseDto getProducts(int page, int size, String sort, boolean desc);
 
 	ResponseDto changeProductStatus(Long id);
+
+	ResponseDto updateCategory(Long id, Category req);
 	
 	
 

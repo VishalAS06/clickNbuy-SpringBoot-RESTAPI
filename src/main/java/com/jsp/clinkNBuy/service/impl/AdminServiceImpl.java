@@ -25,10 +25,9 @@ public class AdminServiceImpl implements AdminService {
 	CategoryDao categoryDao;
 	ProductDao productDao;
 	
-	@Override
 	public ResponseDto addCategory(Category category) {
 		if (categoryDao.isCategoryUnique(category.name())) {
-			categoryDao.save(category);
+			categoryDao.saveAll(category);
 			return new ResponseDto("Category Added Success", category);
 			
 		}
@@ -71,6 +70,18 @@ public class AdminServiceImpl implements AdminService {
 		product.setApproved(product.isApproved()?false:true);
 		productDao.saveProduct(product);
 		return new ResponseDto("Product Status Changed Success", product);
+	}
+
+	@Override
+	public ResponseDto addCategory(com.jsp.clinkNBuy.entity.Category category) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ResponseDto updateCategory(Long id, com.jsp.clinkNBuy.entity.Category category) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
