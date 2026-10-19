@@ -3,6 +3,7 @@ package com.jsp.clinkNBuy.dao;
 
 
 
+import java.util.List;
 import java.util.Locale.Category;
 
 import org.springframework.stereotype.Repository;
@@ -26,8 +27,8 @@ public class AdminDao {
 		categoryRepository.save(category);
 	}
 	
-	public java.util.List<Category> findAllCategory () {
-		java.util.List<Category> list=categoryRepository.findAll();
+	public List<com.jsp.clinkNBuy.entity.Category> findAllCategory () {
+		List<com.jsp.clinkNBuy.entity.Category> list=categoryRepository.findAll();
 		if(list.isEmpty())
 			throw new DataNotFoundException("No Categories Present");
 		else
@@ -39,7 +40,7 @@ public class AdminDao {
 		categoryRepository.deleteById(id);
 	}
 
-	public Category findCategoryById(Long id) {
+	public com.jsp.clinkNBuy.entity.Category findCategoryById(Long id) {
 		return categoryRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Category Not Found"));
 	}
 

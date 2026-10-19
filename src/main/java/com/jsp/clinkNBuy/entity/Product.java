@@ -31,7 +31,7 @@ public class Product {
 	private boolean approved;
 
 	@ManyToOne
-	@JsonIgnore
+	
 	User user;
 
 }

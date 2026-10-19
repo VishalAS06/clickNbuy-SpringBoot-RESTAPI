@@ -1,3 +1,4 @@
+
 package com.jsp.clinkNBuy.controller;
 
 import java.security.Principal;
@@ -20,6 +21,7 @@ import com.jsp.clinkNBuy.entity.Product;
 import com.jsp.clinkNBuy.service.SellerService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
@@ -27,45 +29,57 @@ import lombok.AllArgsConstructor;
 @RequestMapping("/api/v1/seller")
 @AllArgsConstructor
 public class SellerController {
-	
-	SellerService sellerService;
-	
-	@PostMapping("/products")
-	@Operation(summary = "Add Seller Products")
-	@ResponseStatus(value = HttpStatus.CREATED)
-	public ResponseDto saveProduct(@Valid @RequestBody ProductDto productDto, Principal principal) {
-		return sellerService.saveProduct();
-	}
-	
-	@GetMapping("/products")
-	@Operation(summary = "Fetch Seller Products")
-	@ResponseStatus(value = HttpStatus.OK)
-	public ResponseDto getProducts(Principal principal, @RequestParam(defaultValue = "1") int page,
-			@RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "id") String sort,
-			@RequestParam(defaultValue = "false") boolean desc) {
-		return sellerService.getProducts(principal, page, size, sort, desc);
-	}
-	
-	
-	@DeleteMapping("/products/{id}")
-	@Operation(summary = "Delete Seller Product")
-	@ResponseStatus(value = HttpStatus.NO_CONTENT)
-	public ResponseDto deleteProduct(@PathVariable Long id, Principal principal) {
-		return sellerService.deleteProduct(id, principal);
-	}
 
-	@PostMapping("/products/extra")
-	@Operation(hidden = true)
-	@ResponseStatus(value = HttpStatus.CREATED)
-	public ResponseDto addProducts(Principal principal) {
-		return sellerService.addProducts(principal);
-	}
+    private final SellerService sellerService;
 
-	@PutMapping("/products/{id}")
-	@Operation(summary = "Update Seller Product")
-	@ResponseStatus(value = HttpStatus.OK)
-	public ResponseDto deleteProduct(@PathVariable Long id, @RequestBody Product product, Principal principal) {
-		return sellerService.updateProduct(id,product, principal);
-	}
+    @PostMapping("/products")
+    @Operation(summary = "Add Seller Products",
+            security = @SecurityRequirement(name = "bearerAuth"))
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseDto saveProduct(
+            @Valid @RequestBody ProductDto productDto,
+            Principal principal) {
+        return sellerService.saveProduct(productDto, principal);
+    }
 
+    @GetMapping("/products")
+    @Operation(summary = "Fetch Seller Products",
+            security = @SecurityRequirement(name = "bearerAuth"))
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDto getProducts(
+            Principal principal,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sort,
+            @RequestParam(defaultValue = "false") boolean desc) {
+        return sellerService.getProducts(principal, page, size, sort, desc);
+    }
+
+    @DeleteMapping("/products/{id}")
+    @Operation(summary = "Delete Seller Product",
+            security = @SecurityRequirement(name = "bearerAuth"))
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ResponseDto deleteProduct(
+            @PathVariable Long id,
+            Principal principal) {
+        return sellerService.deleteProduct(id, principal);
+    }
+
+    @PostMapping("/products/extra")
+    @Operation(hidden = true)
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseDto addProducts(Principal principal) {
+        return sellerService.addProducts(principal);
+    }
+
+    @PutMapping("/products/{id}")
+    @Operation(summary = "Update Seller Product",
+            security = @SecurityRequirement(name = "bearerAuth"))
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDto updateProduct(
+            @PathVariable Long id,
+            @RequestBody Product product,
+            Principal principal) {
+        return sellerService.updateProduct(id, product, principal);
+    }
 }

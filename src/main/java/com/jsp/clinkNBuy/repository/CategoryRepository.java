@@ -12,6 +12,8 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 	boolean existsByName(String name);
 
 	Category findByName(String category);
+
+	void save(java.util.Locale.Category category);
 	
 	
 
