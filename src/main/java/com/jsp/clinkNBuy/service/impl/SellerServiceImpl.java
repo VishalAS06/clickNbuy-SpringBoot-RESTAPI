@@ -85,7 +85,7 @@ public class SellerServiceImpl implements SellerService {
 			String brand = (String) productDto.get("brand");
 			String imageLink = ((java.util.List<String>) productDto.get("images")).get(0);
 			Double price = ((Double) productDto.get("price")) * 87.87;
-			Integer stock = (Integer) productDto.get("stock");
+			Long stock = (Long) productDto.get("stock");
 
 			if (categoryDao.isCategoryPresent(category)) {
 				if (productDao.isProductUnique(name, brand, price)) {

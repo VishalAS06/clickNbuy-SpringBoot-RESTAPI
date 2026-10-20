@@ -37,5 +37,9 @@ public class CartItemDao {
 		else
 			return items;
 	}
+	
+	public void deleteAll(List<CartItem> items) {
+		itemRepository.deleteAll(items);
+	}
 
 }
